@@ -1,47 +1,22 @@
-//FOR REACT
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 module.exports = {
-    entry: ["whatwg-fetch","./src/jsx/App.jsx","./src/sass/style.scss"],
-    output: { filename: "./dist/js/out.js" },
+    entry: "./js/app.js",
+    output: { filename: "./js/out.js" },
+    watch: true,
     devServer: {
         inline: true,
         contentBase: './',
-        port: 3001
+        port: 3003
     },
-    watch: true,
-
     module: {
         loaders: [
             {
                 test: /\.jsx$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
-                query: { presets: ['es2015', 'stage-2', 'react'] }
-            },
-            {
-                test: /\.scss$/,
-                exclude: /node_modules/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: ['css-loader', 'sass-loader']
-                })
-
-            },
-            {
-                test: /\.(png|jpg|gif)$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {}
-                    }
-                ]
+                query: {
+                    presets: ['es2015', 'stage-2', 'react']
+                }
             }
         ]
-    },
-    plugins: [
-        new ExtractTextPlugin('./dist/css/style.css')
-
-    ]
-};
+    }
+}
