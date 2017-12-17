@@ -12,7 +12,7 @@ body {
   border: 2px solid #ddd;
 }
 
-.kafelek {
+.tiles {
   position: absolute;
   cursor: pointer;
   float: left;
@@ -22,6 +22,6 @@ body {
   margin: 10px;
 }
 
-.kafelek:hover {
+.tiles:hover {
   background-color:#F7C11A;
 }
