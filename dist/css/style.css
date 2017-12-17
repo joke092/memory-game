@@ -2,7 +2,7 @@ body {
   padding: 10px;
 }
 
-.board {
+.plansza {
   margin:30px auto;
   position: relative;
   background: #fff;
@@ -12,16 +12,16 @@ body {
   border: 2px solid #ddd;
 }
 
-.tiles {
+.kafelek {
   position: absolute;
   cursor: pointer;
   float: left;
   width: 100px;
   height: 100px;
-  background: #f6da17 url(images/title.png) center center no-repeat;
+  background: #f6da17 url(images/avatar_160.png) center center no-repeat;
   margin: 10px;
 }
 
-.tiles:hover {
+.kafelek:hover {
   background-color:#F7C11A;
 }

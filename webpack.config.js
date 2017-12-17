@@ -1,5 +1,5 @@
 module.exports = {
-    entry: "./js/app.js",
+    entry: "./dist/js/app.js",
     output: { filename: "./js/out.js" },
     watch: true,
     devServer: {
