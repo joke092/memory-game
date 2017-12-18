@@ -1,6 +1,6 @@
 module.exports = {
     entry: "./dist/js/app.js",
-    output: { filename: "./js/out.js" },
+    output: { filename: "./dist/js/out.js" },
     watch: true,
     devServer: {
         inline: true,

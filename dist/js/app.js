@@ -1,114 +1,202 @@
 (function() {
-    var LICZBA_KAFELKOW = 20;
-    var KAFELKI_NA_RZAD = 5;
-    var kafelki = [];
-    var pobraneKafelki = [];
-    var moznaBrac = true;
-    var liczbaRuchow = 0;
-    var paryKafelkow = 0;
-    var obrazkiKafelkow = [
-        'title_1.png',
-        'title_2.png',
-        'title_3.png',
-        'title_4.png',
-        'title_5.png',
-        'title_6.png',
-        'title_7.png',
-        'title_8.png',
-        'title_9.png',
-        'title_10.png'
-    ];
+    var TILES_COUNT = 20; //5x4 stała określająca ilość kafelków na planszy.
+    var tiles = []; //tablica z wygenerowanymi kafelkami
+    var clickedTiles = []; //kliknięte kafelki (max 2 a potem czyscimy)
+    var canGet = true; //czy aktualnie mozna klikac
+    var movesCount = 0; //liczba ruchów gracza
+    var tilesPair = 0; //sparowane kafelki. Maksymalnie 2x mniej niż TILES_COUNT
+    var engineSrc = 'miniengine.php'; //sciezka do pliku engine dla highscore
 
-    function startGame() {
-        kafelki = [];
-        pobraneKafelki = [];
-        moznaBrac = true;
-        liczbaRuchow = 0;
-        paryKafelkow = 0;
+    startGame = function() {
+        tiles = [];
+        clickedTiles = [];
+        canGet = true;
+        movesCount = 0;
+        tilesPair = 0;
 
-        var plansza = $('.plansza').empty();
+        var $gameBoard = $('#gameBoard').empty();
 
-        for (var i=0; i<LICZBA_KAFELKOW; i++) {
-            kafelki.push(Math.floor(i/2));
+        for (var i=0; i<TILES_COUNT; i++) {
+            tiles.push(Math.floor(i/2));
         }
 
-        for (i=LICZBA_KAFELKOW-1; i>0; i--) {
+        for (i=TILES_COUNT-1; i>0; i--) {
             var swap = Math.floor(Math.random()*i);
-            var tmp = kafelki[i];
-            kafelki[i] = kafelki[swap];
-            kafelki[swap] = tmp;
+            var tmp = tiles[i];
+            tiles[i] = tiles[swap];
+            tiles[swap] = tmp;
         }
 
-        for (i=0; i<LICZBA_KAFELKOW; i++) {
-            var tile = $('<div class="kafelek"></div>');
-            plansza.append(tile);
-            tile.data('cardType',kafelki[i]);
-            tile.data('index', i);
-            tile.css({
-                left : 5+(tile.width()+5)*(i%KAFELKI_NA_RZAD)
-            });
-            tile.css({
-                top : 5+(tile.height()+5)*(Math.floor(i/KAFELKI_NA_RZAD))
-            });
-            tile.bind('click',function() {klikniecieKafelka($(this))});
+        for (i=0; i<TILES_COUNT; i++) {
+            var $cell = $('<div class="cell"></div>');
+            var $tile = $('<div class="tile"><span class="avers"></span><span class="revers"></span></div>');
+            $tile.addClass('card-type-'+tiles[i]);
+            $tile.data('cardType', tiles[i])
+            $tile.data('index', i);
+
+            $cell.append($tile);
+            $gameBoard.append($cell);
         }
-        $('.moves').html(liczbaRuchow);
+        $gameBoard.find('.cell .tile').on('click', function() {
+            tileClicked($(this))
+        });
     }
 
-    function klikniecieKafelka(element) {
-        if (moznaBrac) {
+    showMoves = function(moves) {
+        $('#gameMoves').html(moves);
+    }
+
+    tileClicked = function(element) {
+        if (canGet) {
             //jeżeli jeszcze nie pobraliśmy 1 elementu
             //lub jeżeli index tego elementu nie istnieje w pobranych...
-            if (!pobraneKafelki[0] || (pobraneKafelki[0].data('index') != element.data('index'))) {
-                pobraneKafelki.push(element);
-                element.css({'background-image' : 'url('+obrazkiKafelkow[element.data('cardType')]+')'})
+            if (!clickedTiles.length || (element.data('index') != clickedTiles[0].data('index'))) {
+                clickedTiles.push(element);
+                element.addClass('show');
             }
 
-            if (pobraneKafelki.length == 2) {
-                moznaBrac = false;
-                if (pobraneKafelki[0].data('cardType')==pobraneKafelki[1].data('cardType')) {
-                    window.setTimeout(function() {
-                        usunKafelki();
-                    }, 500);
+            if (clickedTiles.length >= 2) {
+                canGet = false;
+
+                if (clickedTiles[0].data('cardType') === clickedTiles[1].data('cardType')) {
+                    setTimeout(function() {deleteTiles()}, 500);
                 } else {
-                    window.setTimeout(function() {
-                        zresetujKafelki();
-                    }, 500);
+                    setTimeout(function() {resetTiles()}, 500);
                 }
-                liczbaRuchow++;
-                $('.moves').html(liczbaRuchow)
+
+                movesCount++;
+                showMoves(movesCount);
             }
         }
     }
 
-    function usunKafelki() {
-        pobraneKafelki[0].fadeOut(function() {
+    resetTiles = function() {
+        clickedTiles[0].removeClass('show');
+        clickedTiles[1].removeClass('show');
+        clickedTiles = new Array();
+        canGet = true;
+    }
+
+    gameOver = function() {
+        saveHighScore();
+    }
+
+    deleteTiles = function() {
+        clickedTiles[0].fadeOut(function() {
             $(this).remove();
         });
-        pobraneKafelki[1].fadeOut(function() {
+        clickedTiles[1].fadeOut(function() {
             $(this).remove();
+        });
 
-            paryKafelkow++;
-            if (paryKafelkow >= LICZBA_KAFELKOW / 2) {
-                alert('gameOver!');
+        tilesPair++;
+        clickedTiles = new Array();
+        canGet = true;
+        if (tilesPair >= TILES_COUNT / 2) {
+            gameOver();
+        }
+    }
+
+    showLoading = function() {
+        $('.loading').show();
+    }
+
+    hideLoading = function() {
+        $('.loading').hide();
+    }
+
+    showPlayerName = function() {
+        showStage('stagePlayerName');
+        $('#checkName').on('click', function() {
+            if ($('#playerName').val()!='') {
+                $('.player-name-box').removeClass('error');
+                startGame();
+                showStage('stageGame');
+            } else {
+                $('.player-name-box').addClass('error');
+                return false;
             }
-            moznaBrac = true;
-            pobraneKafelki = new Array();
+        })
+    }
+
+    saveHighScore = function() {
+        showLoading();
+        var playerName = $('#playerName').val();
+        $.ajax({
+            url : engineSrc,
+            type : 'POST',
+            data : {
+                action : 'save',
+                player : playerName,
+                moves : movesCount
+            },
+            success : function() {
+
+            },
+            error : function() {
+                console.log('Wystąpił jakis błąd :(')
+            },
+            complete : function() {
+                showHighScore();
+                hideLoading();
+            }
+        })
+    }
+
+    showHighScore = function() {
+        showLoading();
+        $.ajax({
+            url : engineSrc,
+            type : 'POST',
+            data : {
+                action : 'read'
+            },
+            dataType : 'json',
+            success : function(r) {
+                $('#highscoreBoard').empty();
+                for (x=0; x<r.length; x++) {
+                    var record = r[x];
+                    var $div = $('<div class="line"><strong class="player">'+record.player+' :</strong><span class="moves">'+record.moves+'</span></div>');
+                    $('#highscoreBoard').append($div);
+                }
+            },
+            error : function() {
+                console.log('Wystąpił jakis błąd :(')
+            },
+            complete : function() {
+                hideLoading();
+                showStage('stageHighscore');
+            }
+        })
+
+    }
+
+    showStage = function(stage) {
+        $('[class^=slide-]').removeClass('show');
+        $('#'+stage).addClass('show');
+    }
+
+
+    bindEvents = function() {
+        $('#startGame').on('click', function(e) {
+            e.preventDefault();
+            showPlayerName();
+        });
+        $('#showHighscore').on('click', function(e) {
+            e.preventDefault();
+            showHighScore();
+        })
+        $('.close-highscore').on('click', function(e) {
+            e.preventDefault();
+            showStage('stageStart');
+        })
+    }
+
+    init = function() {
+        $(function() {
+            bindEvents();
         });
     }
 
-    function zresetujKafelki() {
-        pobraneKafelki[0].css({'background-image':'url(title.png)'})
-        pobraneKafelki[1].css({'background-image':'url(title.png)'})
-        pobraneKafelki = new Array();
-        moznaBrac = true;
-    }
-
-    $(document).ready(function() {
-
-        $('.start_game').click(function() {
-            startGame();
-        });
-
-    })
+    init();
 })();
