@@ -1,11 +1,11 @@
 (function() {
-    var TILES_COUNT = 20; //5x4 stała określająca ilość kafelków na planszy.
-    var tiles = []; //tablica z wygenerowanymi kafelkami
-    var clickedTiles = []; //kliknięte kafelki (max 2 a potem czyscimy)
-    var canGet = true; //czy aktualnie mozna klikac
-    var movesCount = 0; //liczba ruchów gracza
-    var tilesPair = 0; //sparowane kafelki. Maksymalnie 2x mniej niż TILES_COUNT
-    var engineSrc = 'miniengine.php'; //sciezka do pliku engine dla highscore
+    const TILES_COUNT = 20; //5x4 stała określająca ilość kafelków na planszy.
+    const tiles = []; //tablica z wygenerowanymi kafelkami
+    const clickedTiles = []; //kliknięte kafelki (max 2 a potem czyscimy)
+    const canGet = true; //czy aktualnie mozna klikac
+    const movesCount = 0; //liczba ruchów gracza
+    const tilesPair = 0; //sparowane kafelki. Maksymalnie 2x mniej niż TILES_COUNT
+    const engineSrc = 'miniengine.php'; //sciezka do pliku engine dla highscore
 
     startGame = function() {
         tiles = [];
