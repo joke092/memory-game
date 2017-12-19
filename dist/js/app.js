@@ -14,22 +14,22 @@
         movesCount = 0;
         tilesPair = 0;
 
-        var $gameBoard = $('#gameBoard').empty();
+        let $gameBoard = $('#gameBoard').empty();
 
-        for (var i=0; i<TILES_COUNT; i++) {
+        for (let i=0; i<TILES_COUNT; i++) {
             tiles.push(Math.floor(i/2));
         }
 
         for (i=TILES_COUNT-1; i>0; i--) {
-            var swap = Math.floor(Math.random()*i);
-            var tmp = tiles[i];
+            let swap = Math.floor(Math.random()*i);
+            let tmp = tiles[i];
             tiles[i] = tiles[swap];
             tiles[swap] = tmp;
         }
 
         for (i=0; i<TILES_COUNT; i++) {
-            var $cell = $('<div class="cell"></div>');
-            var $tile = $('<div class="tile"><span class="avers"></span><span class="revers"></span></div>');
+            const $cell = $('<div class="cell"></div>');
+            const $tile = $('<div class="tile"><span class="avers"></span><span class="revers"></span></div>');
             $tile.addClass('card-type-'+tiles[i]);
             $tile.data('cardType', tiles[i])
             $tile.data('index', i);
@@ -121,7 +121,7 @@
 
     saveHighScore = function() {
         showLoading();
-        var playerName = $('#playerName').val();
+        const playerName = $('#playerName').val();
         $.ajax({
             url : engineSrc,
             type : 'POST',
@@ -155,8 +155,8 @@
             success : function(r) {
                 $('#highscoreBoard').empty();
                 for (x=0; x<r.length; x++) {
-                    var record = r[x];
-                    var $div = $('<div class="line"><strong class="player">'+record.player+' :</strong><span class="moves">'+record.moves+'</span></div>');
+                    const record = r[x];
+                    const $div = $('<div class="line"><strong class="player">'+record.player+' :</strong><span class="moves">'+record.moves+'</span></div>');
                     $('#highscoreBoard').append($div);
                 }
             },
