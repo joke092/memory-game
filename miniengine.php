@@ -51,13 +51,13 @@ if ($action == 'save') {
     function readHighScore() {
         global $fileSrc;
 
-        //pobieramy plik do tablicy
+        //download file for table
         $fileLines = file($fileSrc);
 
         $highScore = Array();
 
-        //robimy pętlę po liniach pliku i wrzucamy je do talbicy $highScore
-        //każdy wynik zapisany jest w 2 liniach. Dlatego x za każdym razem zwiększamy o 2
+        //I do loop on lines file and push it for table $highScore
+        //each result is stored in two lines. Therefore, x increases by 2 each time
         if (count($fileLines) > 1) {
             $i = 0;
             for ($x=0; $x<count($fileLines); $x+=2) {
