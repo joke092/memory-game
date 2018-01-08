@@ -1,11 +1,11 @@
 (function() {
-    const TILES_COUNT = 20; //5x4 stała określająca ilość kafelków na planszy.
-    const tiles = []; //tablica z wygenerowanymi kafelkami
-    const clickedTiles = []; //kliknięte kafelki (max 2 a potem czyscimy)
-    const canGet = true; //czy aktualnie mozna klikac
-    const movesCount = 0; //liczba ruchów gracza
-    const tilesPair = 0; //sparowane kafelki. Maksymalnie 2x mniej niż TILES_COUNT
-    const engineSrc = 'miniengine.php'; //sciezka do pliku engine dla highscore
+    const TILES_COUNT = 20; //5x4 fixed defining the number of tiles on the board.
+    const tiles = []; //table with generated tiles
+    const clickedTiles = []; //click tiles (max 2 after clear)
+    const canGet = true; //can you currently click
+    const movesCount = 0; //number of player moves
+    const tilesPair = 0; //paired tiles. Maximally 2x less than TILES_COUNT
+    const engineSrc = 'miniengine.php'; //path to the engine file for highscore
 
     startGame = function() {
         tiles = [];
@@ -48,8 +48,8 @@
 
     tileClicked = function(element) {
         if (canGet) {
-            //jeżeli jeszcze nie pobraliśmy 1 elementu
-            //lub jeżeli index tego elementu nie istnieje w pobranych...
+            //if you are not download 1 element
+            //or if index this element doesn,t exist in downloads...
             if (!clickedTiles.length || (element.data('index') != clickedTiles[0].data('index'))) {
                 clickedTiles.push(element);
                 element.addClass('show');
